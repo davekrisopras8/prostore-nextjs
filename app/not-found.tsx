@@ -7,7 +7,7 @@ const NotFoundPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <Image
-        src="./images/logo.svg"
+        src="/images/logo.svg"
         alt={`${APP_NAME} logo`}
         width={48}
         height={48}
@@ -21,7 +21,7 @@ const NotFoundPage = () => {
           className="mt-4 ml-2"
           onClick={() => (window.location.href = "/")}
         >
-          Back To Home 
+          Back To Home
         </Button>
       </div>
     </div>
