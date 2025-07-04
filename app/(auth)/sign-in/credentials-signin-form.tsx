@@ -5,13 +5,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signInDefaultValue } from "@/lib/constants";
 import Link from "next/link";
+import { signInWithCredentials } from "@/lib/actions/user.actions";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 
 const CredentialsSignInForm = () => {
+  const [data, action] = useActionState(signInWithCredentials, {
+    success: false,
+    message: "",
+  });
+
+  const SignInButton = () => {
+    const { pending } = useFormStatus();
+
+    return (
+      <Button disabled={pending} className="w-full" variant="default">
+        {pending ? "Signing in..." : "Sign in"}
+      </Button>
+    );
+  };
+
   return (
-    <form>
+    <form action={action}>
       <div className="space-y-6">
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email" className="pb-1">Email</Label>
           <Input
             id="email"
             name="email"
@@ -22,7 +40,7 @@ const CredentialsSignInForm = () => {
           />
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password" className="pb-1">Password</Label>
           <Input
             id="password"
             name="password"
@@ -33,11 +51,18 @@ const CredentialsSignInForm = () => {
           />
         </div>
         <div>
-          <Button className="w-full" variant='default'>Sign In</Button>
+          <SignInButton />
         </div>
+
+        {data && !data.success && (
+          <div className="text-center text-destructive">{data.message}</div>
+        )}
+
         <div className="text-sm text-center text-muted-foreground">
-          Don&apos;t have an account?{' '}
-          <Link href='/sign-up' target="_self" className="text-red-500">Sign Up</Link>
+          Don&apos;t have an account?{" "}
+          <Link href="/sign-up" target="_self" className="text-red-500">
+            Sign Up
+          </Link>
         </div>
       </div>
     </form>
