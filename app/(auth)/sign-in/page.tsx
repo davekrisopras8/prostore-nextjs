@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { APP_NAME } from "@/lib/constants";
 import { Metadata } from "next";
 import Image from "next/image";
@@ -11,11 +17,15 @@ export const metadata: Metadata = {
   title: "Sign In",
 };
 
-const SignInPage = async () => {
-  const session = await auth()
+const SignInPage = async (props: {
+  searchParams: Promise<{ callbackUrl: string }>;
+}) => {
+  const {callbackUrl} = await props.searchParams
 
-  if(session) {
-    return redirect('/')
+  const session = await auth();
+
+  if (session) {
+    return redirect(callbackUrl || "/");
   }
 
   return (
