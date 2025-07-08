@@ -82,7 +82,7 @@ export async function addItemToCart(data: CartItem) {
         }
 
         // Increase the quantity
-        (cart.items as CartItem[]).find((x) => x.productId === item.productId);
+        (cart.items as CartItem[]).find((x) => x.productId === item.productId)!.qty = existItem.qty + 1;
       } else {
         // If item does not exist in cart
         // Check stock
