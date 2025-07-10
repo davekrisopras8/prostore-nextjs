@@ -45,7 +45,7 @@ const PlaceOrderPage = async () => {
       <div className="grid md:grid-cols-3 md:gap-5">
         <div className="md:col-span-2 overflow-x-auto space-y-4">
           <Card>
-            <CardContent className="p-4 gap-4">
+            <CardContent className="gap-4">
               <h2 className="text-xl pb-4">Shipping Address</h2>
               <p>{userAddress.fullName}</p>
               <p>
@@ -61,7 +61,7 @@ const PlaceOrderPage = async () => {
           </Card>
 
           <Card>
-            <CardContent className="p-4 gap-4">
+            <CardContent className="gap-4">
               <h2 className="text-xl pb-4">Payment Method</h2>
               <p>{user.paymentMethod}</p>
               <div className="mt-3">
@@ -73,7 +73,7 @@ const PlaceOrderPage = async () => {
           </Card>
 
           <Card>
-            <CardContent className="p-4 gap-4">
+            <CardContent className="gap-4">
               <h2 className="text-xl pb-4">Order Items</h2>
               <Table>
                 <TableHeader>
