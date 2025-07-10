@@ -16,7 +16,7 @@ const OrderDetailsPage = async (props: {
   const order = await getOrderById(id);
   if (!order) notFound();
 
-  return <>Details {id}</>;
+  return <>Details</>;
 };
 
 export default OrderDetailsPage;
