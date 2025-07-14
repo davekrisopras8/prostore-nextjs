@@ -113,6 +113,11 @@ export const config = {
         }
       }
 
+      // Handle session updates
+      if (session?.user.name && trigger === "update") {
+        token.name = session.user.name;
+      }
+
       return token;
     },
     authorized({ request, auth }: any) {
@@ -124,7 +129,7 @@ export const config = {
         /\/profile/,
         /\/user\/(.*)/,
         /\/order\/(.*)/,
-        /\/admin/, 
+        /\/admin/,
       ];
 
       // Get pathname from the req URL object
