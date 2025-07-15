@@ -59,6 +59,7 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat("en-Us", {
   minimumFractionDigits: 2,
 });
 
+
 // Format curency using formatter above
 export function formatCurrency(amount: number | string | null) {
   if (typeof amount === "number") {
@@ -68,6 +69,12 @@ export function formatCurrency(amount: number | string | null) {
   } else {
     return "Nan";
   }
+}
+
+// Format Number
+const NUMBER_FORMAT = new Intl.NumberFormat('en-US')
+export function formatNumber(number: number) {
+  return NUMBER_FORMAT.format(number)
 }
 
 // Shorten UUID
