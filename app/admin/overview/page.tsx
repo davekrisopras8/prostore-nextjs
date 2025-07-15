@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
+import Charts from "./chart";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",
@@ -82,7 +83,9 @@ const AdminOverviewPage = async () => {
           <CardHeader>
             <CardTitle>Overview</CardTitle>
           </CardHeader>
-          <CardContent>{/* Chart here */}</CardContent>
+          <CardContent>
+            <Charts data={{ salesData: summary.salesData }} />
+          </CardContent>
         </Card>
         <Card className="col-span-3">
           <CardHeader>
@@ -102,14 +105,12 @@ const AdminOverviewPage = async () => {
                 {summary.latestSales.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell>
-                      {order?.user?.name ? order.user.name : 'Deleted User'}
+                      {order?.user?.name ? order.user.name : "Deleted User"}
                     </TableCell>
                     <TableCell>
                       {formatDateTime(order.createdAt).dateOnly}
                     </TableCell>
-                    <TableCell>
-                      {formatCurrency(order.totalPrice)}
-                    </TableCell>
+                    <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
                     <TableCell>
                       <Link href={`/order/${order.id}`}>
                         <span className="px-2">Details</span>
