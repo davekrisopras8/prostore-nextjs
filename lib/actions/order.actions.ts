@@ -410,7 +410,7 @@ export async function deliverOrder(orderId: string) {
 
     return {
       success: true,
-      message: "Order has been masrked delivered",
+      message: "Order has been marked delivered",
     };
   } catch (error) {
     return { success: false, message: formatError(error) };

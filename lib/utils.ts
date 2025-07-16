@@ -20,12 +20,11 @@ export function formatNumberWithDecimal(num: number): string {
 // Format errors
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatError(error: any) {
-  if (error.name === "ZodError") {
+  if (error.name === "ZodError" && error.errors && typeof error.errors === "object") {
     // Handle zod error
     const fieldErrors = Object.keys(error.errors).map(
       (field) => error.errors[field].message
     );
-
     return fieldErrors.join(". ");
   } else if (
     error.name === "PrismaClientKnownRequestError" &&
