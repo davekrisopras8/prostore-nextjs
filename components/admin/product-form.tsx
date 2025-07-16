@@ -5,7 +5,7 @@ import { insertProductSchema, updateProductSchema } from "@/lib/validators";
 import { Product } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ControllerRenderProps, useForm } from "react-hook-form";
+import { ControllerRenderProps, SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
 import {
   Form,
@@ -19,6 +19,8 @@ import slugify from "slugify";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { createProduct, updateProduct } from "@/lib/actions/product.actions";
+import { toast } from "sonner";
 
 const ProductForm = ({
   type,
@@ -40,9 +42,46 @@ const ProductForm = ({
       product && type === "Update" ? product : productDefaultValues,
   });
 
+  const onSubmit: SubmitHandler<z.infer<typeof insertProductSchema>> = async (
+    values
+  ) => {
+    // On create
+    if (type === "Create") {
+      const res = await createProduct(values);
+
+      if (!res.success) {
+        toast.error(res.message);
+      } else {
+        toast.success(res.message);
+      }
+      router.push("/admin/products");
+    }
+
+    // On update
+    if (type === "Update") {
+      if (!productId) {
+        router.push("/admin/products");
+        return;
+      }
+
+      const res = await updateProduct({ ...values, id: productId });
+
+      if (!res.success) {
+        toast.error(res.message);
+      } else {
+        toast.success(res.message);
+      }
+      router.push("/admin/products");
+    }
+  };
+
   return (
     <Form {...form}>
-      <form className="space-y-8">
+      <form
+        className="space-y-8"
+        method="POST"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <div className="flex flex-col md:flex-row gap-5">
           {/* NAME */}
           <FormField
