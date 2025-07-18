@@ -13,6 +13,7 @@ import { prisma } from "@/db/prisma";
 import { formatError } from "../utils";
 import { ShippingAddress } from "@/types";
 import z from "zod";
+import { PAGE_SIZE } from "../constants";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -127,49 +128,71 @@ export async function updateUserPaymentMethod(
 
     if (!currentUser) throw new Error("User not found");
 
-    const paymentMethod = paymentMethodSchema.parse(data)
+    const paymentMethod = paymentMethodSchema.parse(data);
 
     await prisma.user.update({
-      where: {id: currentUser.id},
-      data: {paymentMethod: paymentMethod.type}
-    })
+      where: { id: currentUser.id },
+      data: { paymentMethod: paymentMethod.type },
+    });
 
     return {
       success: true,
-      message: 'User updated successfully'
-    }
+      message: "User updated successfully",
+    };
   } catch (error) {
     return { success: false, message: formatError(error) };
   }
 }
 
 // User the user profile
-export async function updateProfile(user: {name: string; email: string}) {
+export async function updateProfile(user: { name: string; email: string }) {
   try {
-    const session = await auth()
+    const session = await auth();
 
     const currentUser = await prisma.user.findFirst({
       where: {
-        id: session?.user?.id
-      }
-    })
+        id: session?.user?.id,
+      },
+    });
 
-    if(!currentUser) throw new Error('User not found')
+    if (!currentUser) throw new Error("User not found");
 
     await prisma.user.update({
       where: {
-        id: currentUser.id
+        id: currentUser.id,
       },
       data: {
-        name: user.name
-      }
-    })
+        name: user.name,
+      },
+    });
 
     return {
       success: true,
-      message: 'User updated successfully'
-    }
+      message: "User updated successfully",
+    };
   } catch (error) {
-    return {success: false, message: formatError(error)}
+    return { success: false, message: formatError(error) };
+  }
+}
+
+// Get all the users
+export async function getAllUsers({
+  limit = PAGE_SIZE,
+  page,
+}: {
+  limit?: number;
+  page: number;
+}) {
+  const data = await prisma.user.findMany({
+    orderBy: {createdAt: 'desc'},
+    take: limit,
+    skip: (page - 1) * limit
+  })
+
+  const dataCount = await prisma.user.count()
+
+  return  {
+    data,
+    totalPages: Math.ceil(dataCount / limit)
   }
 }
