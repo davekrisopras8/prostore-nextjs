@@ -103,7 +103,7 @@ const ProductForm = ({
                 "name"
               >;
             }) => (
-              <FormItem className=" flex flex-col w-full">
+              <FormItem className="flex flex-col w-full">
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter product name" {...field} />
