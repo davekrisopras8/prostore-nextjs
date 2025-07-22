@@ -8,7 +8,7 @@ import { prisma } from "@/db/prisma";
 import { revalidatePath } from "next/cache";
 
 // Create & update reviews
-export async function createUpdateReviews(
+export async function createUpdateReview(
   data: z.infer<typeof insertReviewSchema>
 ) {
   try {
