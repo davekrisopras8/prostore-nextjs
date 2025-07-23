@@ -1,4 +1,19 @@
-import NextAuth from "next-auth";
-import { config } from "@/auth";
+import { withAuth } from "next-auth/middleware";
 
-export const { auth: middleware } = NextAuth(config);
+export default withAuth({
+  pages: {
+    signIn: "/sign-in",
+  },
+});
+
+export const config = {
+  matcher: [
+    "/shipping-address",
+    "/payment-method",
+    "/place-order",
+    "/profile",
+    "/user/:path*",
+    "/order/:path*",
+    "/admin/:path*",
+  ],
+};
