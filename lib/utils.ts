@@ -20,17 +20,18 @@ export function formatNumberWithDecimal(num: number): string {
 // Format errors
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatError(error: any) {
-  if (error.name === "ZodError" && error.errors && typeof error.errors === "object") {
-    // Handle zod error
+  if (error.name === "ZodError") {
+    // Handle Zod error
     const fieldErrors = Object.keys(error.errors).map(
       (field) => error.errors[field].message
     );
+
     return fieldErrors.join(". ");
   } else if (
     error.name === "PrismaClientKnownRequestError" &&
     error.code === "P2002"
   ) {
-    // Handle prisma error
+    // Handle Prisma error
     const field = error.meta?.target ? error.meta.target[0] : "Field";
     return `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`;
   } else {
@@ -52,33 +53,33 @@ export function round2(value: number | string) {
   }
 }
 
-const CURRENCY_FORMATTER = new Intl.NumberFormat("en-Us", {
+const CURRENCY_FORMATTER = new Intl.NumberFormat("en-US", {
   currency: "USD",
   style: "currency",
   minimumFractionDigits: 2,
 });
 
-
-// Format curency using formatter above
+// Format currency using the formatter above
 export function formatCurrency(amount: number | string | null) {
   if (typeof amount === "number") {
     return CURRENCY_FORMATTER.format(amount);
   } else if (typeof amount === "string") {
     return CURRENCY_FORMATTER.format(Number(amount));
   } else {
-    return "Nan";
+    return "NaN";
   }
 }
 
 // Format Number
-const NUMBER_FORMAT = new Intl.NumberFormat('en-US')
+const NUMBER_FORMATTER = new Intl.NumberFormat("en-US");
+
 export function formatNumber(number: number) {
-  return NUMBER_FORMAT.format(number)
+  return NUMBER_FORMATTER.format(number);
 }
 
 // Shorten UUID
-export function formatUUID(id: string) {
-  return `...${id.substring(id.length - 6)}`;
+export function formatId(id: string) {
+  return `..${id.substring(id.length - 6)}`;
 }
 
 // Format date and times
