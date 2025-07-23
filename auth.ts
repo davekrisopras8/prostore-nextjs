@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { authConfig } from '@/auth.config';
+import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/db/prisma';
 import { cookies } from 'next/headers';
 import { compare } from './lib/encrypt';
@@ -54,6 +55,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    ...authConfig.callbacks,
     async session({ session, user, trigger, token }) {
       // Set the user ID from the token
       session.user.id = token.sub;
