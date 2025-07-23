@@ -1,9 +1,8 @@
 import NextAuth from 'next-auth';
-import { authConfig } from '@/auth';
-import { PrismaAdapter } from '@auth/prisma-adapter';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/db/prisma';
 import { cookies } from 'next/headers';
-import { compare } from '@/lib/encrypt';
+import { compare } from './lib/encrypt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -55,7 +54,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    ...authConfig.callbacks,
     async session({ session, user, trigger, token }) {
       // Set the user ID from the token
       session.user.id = token.sub;
@@ -120,5 +118,3 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
-export { authConfig };
-
