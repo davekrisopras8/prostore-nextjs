@@ -1,8 +1,8 @@
 import { getOrderById } from "@/lib/actions/order.actions";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import OrderDetailsTable from "./order-details-table";
-import { ShippingAddress } from "@/types";
+import { PaymentResult, ShippingAddress } from "@/types";
 import { auth } from "@/auth";
 
 export const metadata: Metadata = {
@@ -21,17 +21,24 @@ const OrderDetailsPage = async (props: {
 
   const session = await auth();
 
+  if (order.userId !== session?.user.id && session?.user.role !== "admin") {
+    return redirect("/unauthorized");
+  }
+
   return (
-    <>
-      <OrderDetailsTable
-        order={{
-          ...order,
-          shippingAddress: order.shippingAddress as ShippingAddress,
-        }}
-        paypalClientId={process.env.PAYPAL_CLIENT_ID || "sb"}
-        isAdmin={session?.user?.role === "admin" || false}
-      />
-    </>
+    <OrderDetailsTable
+      order={{
+        ...order,
+        user: {
+          name: order.user!.name!,
+          email: order.user!.email,
+        },
+        shippingAddress: order.shippingAddress as ShippingAddress,
+        paymentResult: order.paymentResult as PaymentResult,
+      }}
+      paypalClientId={process.env.PAYPAL_CLIENT_ID || "sb"}
+      isAdmin={session?.user?.role === "admin"}
+    />
   );
 };
 

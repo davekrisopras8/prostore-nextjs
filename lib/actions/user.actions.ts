@@ -148,7 +148,10 @@ export async function updateUserPaymentMethod(
 }
 
 // User the user profile
-export async function updateProfile(user: { name: string; email: string }) {
+export async function updateProfile(user: {
+  name: string;
+  email: string;
+}) {
   try {
     const session = await auth();
 
@@ -199,7 +202,7 @@ export async function getAllUsers({
       : {};
 
   const data = await prisma.user.findMany({
-    where: {...queryFilter},
+    where: { ...queryFilter },
     orderBy: { createdAt: "desc" },
     take: limit,
     skip: (page - 1) * limit,

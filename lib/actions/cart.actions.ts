@@ -7,7 +7,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { cartItemSchema, insertCartSchema } from "../validators";
 import { revalidatePath } from "next/cache";
-import { Prisma } from "@prisma/client";
 
 // Calculate cart prices
 const calcPrice = (items: CartItem[]) => {
@@ -96,7 +95,9 @@ export async function addItemToCart(data: CartItem) {
       await prisma.cart.update({
         where: { id: cart.id },
         data: {
-          items: cart.items as Prisma.CartUpdateitemsInput[],
+          items: {
+            set: cart.items
+          },
           ...calcPrice(cart.items as CartItem[]),
         },
       });
@@ -182,7 +183,9 @@ export async function removeItemFromCart(productId: string) {
     await prisma.cart.update({
       where: {id: cart.id},
       data: {
-        items: cart.items as Prisma.CartUpdateitemsInput[],
+        items: {
+          set: cart.items
+        },
         ...calcPrice(cart.items as CartItem[])
       }
     })

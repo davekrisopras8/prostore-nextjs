@@ -11,7 +11,12 @@ import { CartItem, PaymentResult } from "@/types";
 import { paypal } from "../paypal";
 import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
-import { Prisma } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
+import { Order, Prisma } from "@prisma/client";
+
+export type OrderWithUser = Prisma.OrderGetPayload<{
+  include: { user: { select: { name: true } } };
+}>;
 
 // Create order and create the order items
 export async function createOrder() {
@@ -272,14 +277,14 @@ export async function getMyOrders({
   if (!session) throw new Error("User is not authorized");
 
   const data = await prisma.order.findMany({
-    where: { userId: session?.user?.id! },
+    where: { userId: session?.user?.id },
     orderBy: { createdAt: "desc" },
     take: limit,
     skip: (page - 1) * limit,
   });
 
   const dataCount = await prisma.order.count({
-    where: { userId: session?.user?.id! },
+    where: { userId: session?.user?.id },
   });
 
   return {
@@ -307,7 +312,7 @@ export async function getOrderSummary() {
 
   // Get monthly sales
   const salesDataRaw = await prisma.$queryRaw<
-    Array<{ month: string; totalSales: Prisma.Decimal }>
+    Array<{ month: string; totalSales: Decimal }>
   >`SELECT to_char("createdAt", 'MM/YY') as "month", sum("totalPrice") as "totalSales" FROM "Order" GROUP BY to_char("createdAt", 'MM/YY')`;
 
   const salesData: SalesDataType = salesDataRaw.map((entry) => ({
@@ -343,7 +348,7 @@ export async function getAllOrders({
   limit?: number;
   page: number;
   query: string;
-}) {
+}): Promise<{ data: OrderWithUser[]; totalPages: number }> {
   const queryFilter: Prisma.OrderWhereInput =
     query && query !== "all"
       ? {
@@ -356,17 +361,19 @@ export async function getAllOrders({
         }
       : {};
 
-  const data = await prisma.order.findMany({
-    where: {
-      ...queryFilter,
-    },
+  const dataRaw = await prisma.order.findMany({
+    where: { ...queryFilter },
     orderBy: { createdAt: "desc" },
     take: limit,
     skip: (page - 1) * limit,
-    include: { user: { select: { name: true } } },
+    include: {
+      user: { select: { name: true } },
+    },
   });
 
-  const dataCount = await prisma.order.count();
+  const data = dataRaw as unknown as OrderWithUser[];
+
+  const dataCount = await prisma.order.count({ where: queryFilter });
 
   return {
     data,
