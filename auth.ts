@@ -6,7 +6,7 @@ import { compareSync } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
 import { cookies } from "next/headers";
 
-export const config = {
+export const authConfig = {
   pages: {
     signIn: "/sign-in",
     error: "/sign-in",
@@ -122,4 +122,4 @@ export const config = {
   },
 } satisfies NextAuthConfig;
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
