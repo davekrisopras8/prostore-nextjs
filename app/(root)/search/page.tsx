@@ -34,19 +34,19 @@ const ratings = [4, 3, 2, 1];
 const sortOrders = ["newest", "lowest", "highest", "rating"];
 
 export async function generateMetadata(props: {
-  searchParams: Promise<{
+  searchParams?: {
     q: string;
     category: string;
     price: string;
     rating: string;
-  }>;
+  };
 }) {
   const {
     q = "all",
     category = "all",
     price = "all",
     rating = "all",
-  } = await props.searchParams;
+  } = props.searchParams || {};
 
   const isQuerySet = q && q !== "all" && q.trim() !== "";
   const isCategorySet =
@@ -70,14 +70,14 @@ export async function generateMetadata(props: {
 }
 
 const SearchPage = async (props: {
-  searchParams: Promise<{
+  searchParams?: {
     q?: string;
     category?: string;
     price?: string;
     rating?: string;
     sort?: string;
     page?: string;
-  }>;
+  };
 }) => {
   const {
     q = "all",
@@ -86,7 +86,7 @@ const SearchPage = async (props: {
     rating = "all",
     sort = "newest",
     page = "1",
-  } = await props.searchParams;
+  } = props.searchParams || {};
 
   // Construct filter URL
   const getFilterUrl = ({
@@ -134,9 +134,9 @@ const SearchPage = async (props: {
             <li>
               <Link
                 href={getFilterUrl({ c: "all" })}
-                className={`${
-                  (category === "all" || category === "") && "font-bold"
-                }`}
+                className={
+                  category === "all" || category === "" ? "font-bold" : ""
+                }
               >
                 Any
               </Link>
@@ -144,7 +144,9 @@ const SearchPage = async (props: {
             {categories.map((x) => (
               <li key={x.category}>
                 <Link
-                  className={`${category === x.category && "font-bold"}`}
+                  className={
+                    category === "all" || category === "" ? "font-bold" : ""
+                  }
                   href={getFilterUrl({ c: x.category })}
                 >
                   {x.category}
