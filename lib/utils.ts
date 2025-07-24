@@ -78,7 +78,7 @@ export function formatNumber(number: number) {
 }
 
 // Shorten UUID
-export function formatId(id: string) {
+export function formatUUID(id: string) {
   return `..${id.substring(id.length - 6)}`;
 }
 
